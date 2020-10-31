@@ -1,0 +1,15 @@
+{
+    "name": "graphql-project",
+    "version": "1.0.0",
+    "description": "Sample learning project for node js, express, mongodb and graphql.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Surya Bhusal",
+    "license": "MIT",
+    "dependencies": {
+        "express": "^4.17.1",
+        "nodemon": "^2.0.6"
+    }
+}
