@@ -14,21 +14,6 @@ const {
     GraphQLList
 } = graphql;
 
-// Sample Query Data: Supposed to be from db
-var books = [
-    { name: "Book1", genre: "Genre1", id: "1", authorId: "1" },
-    { name: "Book2", genre: "Genre2", id: "2", authorId: "2" },
-    { name: "Book3", genre: "Genre3", id: "3", authorId: "3" },
-    { name: "Book4", genre: "Genre3", id: "4", authorId: "1" },
-    { name: "Book5", genre: "Genre3", id: "5", authorId: "2" },
-    { name: "Book6", genre: "Genre3", id: "6", authorId: "3" }
-];
-var authors = [
-    { name: "Author1", age: 32, id: "1" },
-    { name: "Author2", age: 35, id: "2" },
-    { name: "Author3", age: 45, id: "3" }
-];
-
 // Defining graphql Object Types: Mapps db col from db to graphql
 const BookType = new GraphQLObjectType({
     name: "Book",
@@ -36,11 +21,12 @@ const BookType = new GraphQLObjectType({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
         genre: { type: GraphQLString },
+        authorId: { type: GraphQLID },
         author: {
             type: AuthorType,
             resolve(parent, args) {
                 // Parent is Book Type
-                return _.find(authors, { id: parent.authorId });
+                return Author.findById(parent.authorId);
             }
         }
     })
@@ -55,7 +41,8 @@ const AuthorType = new GraphQLObjectType({
         books: {
             type: new GraphQLList(BookType), // List Type -> List of books associated with author
             resolve(parent, args) {
-                return _.filter(books, { authorId: parent.id });
+                // Parent is AuthorType
+                return Book.find({ authorId: parent.id });
             }
         }
     })
@@ -70,7 +57,7 @@ const RootQuery = new GraphQLObjectType({
             args: { id: { type: GraphQLID } }, // argument is expected for specific book type
             resolve(parent, args) {
                 // Code to get data from db / other sources
-                return _.find(books, { id: args.id });
+                return Book.findById(args.id);
             }
         },
         author: {
@@ -78,24 +65,64 @@ const RootQuery = new GraphQLObjectType({
             args: { id: { type: GraphQLID } },
             resolve(parent, args) {
                 // Code to get data from db / other sources
-                return _.find(authors, { id: args.id });
+                return Author.findById(args.id);
             }
         },
         books: {
             type: new GraphQLList(BookType), // List Type -> Returns List of objects
             resolve(parent, args) {
-                return books;
+                return Book.find({});
             }
         },
         authors: {
             type: new GraphQLList(AuthorType),
             resolve(parent, args) {
-                return authors;
+                return Author.find({});
+            }
+        }
+    }
+});
+
+// Mutation CRUD Database
+const Mutation = new GraphQLObjectType({
+    name: "Mutation",
+    fields: {
+        addAuthor: {
+            type: AuthorType,
+            args: {
+                name: { type: GraphQLString },
+                age: { type: GraphQLInt }
+            },
+            resolve(parent, args) {
+                // Create Author
+                let author = new Author({
+                    name: args.name,
+                    age: args.age
+                });
+                return author.save();
+            }
+        },
+        addBook: {
+            type: BookType,
+            args: {
+                name: { type: GraphQLString },
+                genre: { type: GraphQLString },
+                authorId: { type: GraphQLID }
+            },
+            resolve(parent, args) {
+                // Create Book
+                let book = new Book({
+                    name: args.name,
+                    genre: args.genre,
+                    authorId: args.authorId
+                });
+                return book.save();
             }
         }
     }
 });
 
 module.exports = new GraphQLSchema({
-    query: RootQuery
+    query: RootQuery,
+    mutation: Mutation
 });
