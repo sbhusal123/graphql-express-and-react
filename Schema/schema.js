@@ -1,4 +1,9 @@
 const graphql = require("graphql");
+const _ = require("lodash");
+
+// Import Models
+const Book = require("../models/book");
+const Author = require("../models/author");
 
 const {
     GraphQLObjectType,
@@ -8,8 +13,6 @@ const {
     GraphQLInt,
     GraphQLList
 } = graphql;
-
-const _ = require("lodash");
 
 // Sample Query Data: Supposed to be from db
 var books = [
