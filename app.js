@@ -1,8 +1,17 @@
 const express = require("express");
 const { graphqlHTTP } = require("express-graphql");
 const schema = require("./Schema/schema");
+const mongoose = require("mongoose");
 
 const app = express();
+
+// Connect to mlab database
+mongoose.connect(
+    "mongodb://surya:surya@cluster0-shard-00-00.15xqi.mongodb.net:27017,cluster0-shard-00-01.15xqi.mongodb.net:27017,cluster0-shard-00-02.15xqi.mongodb.net:27017/graphql_practice?ssl=true&replicaSet=atlas-mz1pxe-shard-0&authSource=admin&retryWrites=true&w=majority"
+);
+mongoose.connection.once("open", () => {
+    console.log("Connected to database.. ");
+});
 
 // Use graphql Middleware in route.
 app.use(
