@@ -12,9 +12,9 @@ const _ = require("lodash");
 
 // Sample Query Data: Supposed to be from db
 var books = [
-    { name: "Book1", genre: "Genre1", id: "1" },
-    { name: "Book2", genre: "Genre2", id: "2" },
-    { name: "Book3", genre: "Genre3", id: "3" }
+    { name: "Book1", genre: "Genre1", id: "1", authorId: "1" },
+    { name: "Book2", genre: "Genre2", id: "2", authorId: "2" },
+    { name: "Book3", genre: "Genre3", id: "3", authorId: "3" }
 ];
 var authors = [
     { name: "Author1", age: 32, id: "1" },
@@ -28,7 +28,14 @@ const BookType = new GraphQLObjectType({
     fields: () => ({
         id: { type: GraphQLID },
         name: { type: GraphQLString },
-        genre: { type: GraphQLString }
+        genre: { type: GraphQLString },
+        author: {
+            type: AuthorType,
+            resolve(parent, args) {
+                // Parent is Book Type
+                return _.find(authors, { id: parent.authorId });
+            }
+        }
     })
 });
 const AuthorType = new GraphQLObjectType({
