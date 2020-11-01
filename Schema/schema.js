@@ -11,7 +11,8 @@ const {
     GraphQLSchema,
     GraphQLID,
     GraphQLInt,
-    GraphQLList
+    GraphQLList,
+    GraphQLNonNull
 } = graphql;
 
 // Defining graphql Object Types: Mapps db col from db to graphql
@@ -90,8 +91,8 @@ const Mutation = new GraphQLObjectType({
         addAuthor: {
             type: AuthorType,
             args: {
-                name: { type: GraphQLString },
-                age: { type: GraphQLInt }
+                name: { type: GraphQLNonNull(GraphQLString) }, // name is required
+                age: { type: GraphQLNonNull(GraphQLInt) } // age is required
             },
             resolve(parent, args) {
                 // Create Author
@@ -105,9 +106,9 @@ const Mutation = new GraphQLObjectType({
         addBook: {
             type: BookType,
             args: {
-                name: { type: GraphQLString },
-                genre: { type: GraphQLString },
-                authorId: { type: GraphQLID }
+                name: { type: new GraphQLNonNull(GraphQLString) }, // name is required
+                genre: { type: new GraphQLNonNull(GraphQLString) }, // Genre is required
+                authorId: { type: new GraphQLNonNull(GraphQLID) } // authorId is require
             },
             resolve(parent, args) {
                 // Create Book
