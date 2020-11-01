@@ -2,6 +2,15 @@ const graphql = require("graphql");
 
 const { GraphQLObjectType, GraphQLString, GraphQLSchema } = graphql;
 
+const _ = require("lodash");
+
+// Sample Query Data: Supposed to be from db
+var books = [
+    { name: "Book1", ganre: "Genre1", id: "1" },
+    { name: "Book2", ganre: "Genre2", id: "2" },
+    { name: "Book3", ganre: "Genre3", id: "3" }
+];
+
 // Defining graphql Object Types: Similar to model
 const BookType = new GraphQLObjectType({
     name: "Book",
@@ -21,11 +30,7 @@ const RootQuery = new GraphQLObjectType({
             args: { id: { type: GraphQLString } }, // argument is expected for specific book type
             resolve(parent, args) {
                 // Code to get data from db / other sources
-                return {
-                    id: 2,
-                    name: "sasd",
-                    genre: "asd"
-                };
+                _.find(books, { id: args.id });
             }
         }
     }
