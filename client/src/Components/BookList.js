@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 
+// Components
+import BookDetails from "./BookDetails";
+
 // Graphql Imports
 import { graphql } from "react-apollo"; // To bind query to component
 import { getBooksQuery } from "../queries/queries";
@@ -22,6 +25,7 @@ class BookList extends Component {
         return (
             <div>
                 <ul id="book-list">{this.diplayBooks()}</ul>
+                <BookDetails />
             </div>
         );
     }
