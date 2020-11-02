@@ -2,7 +2,8 @@ import React, { Component } from "react";
 
 // Graphql Imports
 import { graphql } from "react-apollo"; // To bind query to component
-import { getAuthorsQuery } from "../queries/queries";
+import { flowRight as compose } from "lodash";
+import { getAuthorsQuery, addBookMutation } from "../queries/queries";
 
 class AddBook extends Component {
     constructor(props) {
@@ -15,7 +16,7 @@ class AddBook extends Component {
     }
     // Return options for authors
     displayAuthorOptions() {
-        const data = this.props.data;
+        const data = this.props.getAuthorsQuery;
 
         if (data.loading) {
             return <option disabled>Loading authors...</option>;
@@ -32,7 +33,15 @@ class AddBook extends Component {
 
     submitForm(e) {
         e.preventDefault();
-        console.log(this.state);
+
+        // Pass variables into the mutation
+        this.props.addBookMutation({
+            variables: {
+                name: this.state.name,
+                genre: this.state.genre,
+                authorId: this.state.authorId
+            }
+        });
     }
 
     render() {
@@ -72,4 +81,8 @@ class AddBook extends Component {
     }
 }
 
-export default graphql(getAuthorsQuery)(AddBook);
+// Bind mutation and queries to the component by Composing
+export default compose(
+    graphql(getAuthorsQuery, { name: "getAuthorsQuery" }), // accessed using this.props.getAuthorsQuery
+    graphql(addBookMutation, { name: "addBookMutation" })
+)(AddBook);
