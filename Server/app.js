@@ -11,7 +11,7 @@ app.use(cors());
 
 // Connect to mlab database
 mongoose.connect(
-    "mongodb://surya:surya@cluster0-shard-00-00.15xqi.mongodb.net:27017,cluster0-shard-00-01.15xqi.mongodb.net:27017,cluster0-shard-00-02.15xqi.mongodb.net:27017/graphql_practice?ssl=true&replicaSet=atlas-mz1pxe-shard-0&authSource=admin&retryWrites=true&w=majority"
+    "mongodb://127.0.0.1:27017/myapp"
 );
 mongoose.connection.once("open", () => {
     console.log("Connected to database.. ");
